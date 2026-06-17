@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Piazza Della Pizza</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+</head>
+<body>
+
+<div class="piazza">
+
+  <!-- Hero -->
+  <header class="hero">
+    <span class="hero-logo"> <img src="../frontend/images/piazza_logo.png" alt="Pizza della Pizza logo"></span>
+  </header>
+
+  <div class="step-bar">
+    <div class="step" id="s1"></div>
+    <div class="step" id="s2"></div>
+    <div class="step" id="s3"></div>
+    <div class="step" id="s4"></div>
+  </div>
+
+  <!-- Page1: Size & Type -->
+  <section id="page1">
+    <div class="card">
+      <div class="card-title">
+        <i class="ti ti-ruler-2" aria-hidden="true"></i>
+        Select your size
+      </div>
+      <div class="size-grid">
+        <div class="size-btn" onclick="selectSize('M', this)">
+          <span class="size-letter">M</span>
+          <span class="size-label">25 cm</span>
+          <span class="size-price">500 DA</span>
+        </div>
+        <div class="size-btn" onclick="selectSize('L', this)">
+          <span class="size-letter">L</span>
+          <span class="size-label">30 cm</span>
+          <span class="size-price">1000 DA</span>
+        </div>
+        <div class="size-btn" onclick="selectSize('XL', this)">
+          <span class="size-letter">XL</span>
+          <span class="size-label">35 cm</span>
+          <span class="size-price">1500 DA</span>
+        </div>
+        <div class="size-btn" onclick="selectSize('XXL', this)">
+          <span class="size-letter">XXL</span>
+          <span class="size-label">40 cm</span>
+          <span class="size-price">2000 DA</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <i class="ti ti-category" aria-hidden="true"></i>
+        Choose pizza type
+      </div>
+      <div class="type-grid" id="typeGrid">
+        <div class="type-btn" onclick="selectType('Margherita', this)">
+          <span class="type-icon">🍅</span> Margherita
+        </div>
+        <div class="type-btn" onclick="selectType('Chicken', this)">
+          <span class="type-icon">🍗</span> Chicken
+        </div>
+        <div class="type-btn" onclick="selectType('Tuna', this)">
+          <span class="type-icon">🐟</span> Tuna
+        </div>
+        <div class="type-btn" onclick="selectType('Beef', this)">
+          <span class="type-icon">🥩</span> Beef
+        </div>
+        <div class="type-btn" onclick="selectType('4 Cheese', this)">
+          <span class="type-icon">🧀</span> 4 Cheese
+        </div>
+        <div class="type-btn" onclick="selectType('Veggie', this)">
+          <span class="type-icon">🥦</span> Veggie
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="nav-next" id="next1" onclick="goTo(2)" disabled>
+        <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        Next
+      </button>
+    </div>
+  </section>
+
+<!-- Page2: Toppings -->
+  <section id="page2">
+    <div class="card">
+      <div class="card-title">
+        <i class="ti ti-salad" aria-hidden="true"></i>
+        Customize toppings
+        <span style="font-size:12px;font-weight:400;color:var(--color-text-secondary);font-family:'DM Sans',sans-serif;">
+          (pick as many as you like)
+        </span>
+      </div>
+      <div class="toppings-grid" id="toppingGrid"></div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="nav-back" onclick="goTo(1)">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i>
+      </button>
+      <button class="nav-next" onclick="goTo(3)">
+        <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        Next: Your Details
+      </button>
+    </div>
+
+  </section>
+
+<!-- Page3: Customer details -->
+  <section id="page3">
+    <div class="card">
+      <div class="card-title">
+        <i class="ti ti-user" aria-hidden="true"></i>
+        Your details
+      </div>
+      <div class="field-group">
+
+        <div>
+          <label class="field-label" for="fname">Full name</label>
+          <input type="text" id="fname" placeholder="Sankouchi Farid" />
+          <span class="err" id="errName">Please enter your name.</span>
+        </div>
+
+        <div>
+          <label class="field-label" for="fphone">Phone number</label>
+          <input type="tel" id="fphone" placeholder="0662 20 22 24" />
+          <span class="err" id="errPhone">Please enter a valid phone number.</span>
+        </div>
+
+        <div>
+          <label class="field-label" for="faddr">Delivery address</label>
+          <textarea id="faddr" rows="3" placeholder="Street, district, city"></textarea>
+          <span class="err" id="errAddr">Please enter your delivery address.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="nav-btns">
+      <button class="nav-back" onclick="goTo(2)">
+        <i class="ti ti-arrow-left" aria-hidden="true"></i>
+      </button>
+      <button class="nav-next" onclick="goTo(4)">
+        <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        Review order
+      </button>
+    </div>
+
+  </section>
+
+<!-- Page4: Review & submit -->
+  <section id="page4">
+    <div class="card">
+      <div class="card-title">
+        <i class="ti ti-receipt" aria-hidden="true"></i>
+        Order summary
+      </div>
+
+      <div class="summary-card" id="summaryBlock"></div>
+
+      <button class="order-btn" onclick="submitOrder()">
+        <i class="ti ti-checks" aria-hidden="true"></i>
+        Place my order
+      </button>
+    </div>
+
+    <div class="nav-btns" style="margin-top:0.5rem">
+      <button class="nav-back" style="width:100%;justify-content:center;" onclick="goTo(3)">
+        <i class="ti ti-edit" aria-hidden="true"></i>
+        Edit details
+      </button>
+    </div>
+
+  </section>
+
+  <!-- Page5: Confirmation ticket -->
+
+  <section id="page5">
+    <div class="card ticket">
+      <h2>Order received!</h2>
+      <div class="ticket-number" id="ticketNum">#0000</div>
+
+      <p>
+        Your order has been sent.<br>
+        We'll call you on <strong id="confirmPhone"></strong> to confirm delivery.
+      </p>
+
+      <div class="ticket-details" id="ticketDetails"></div>
+
+
+      <button class="order-btn"
+              style="margin-top:1.5rem;max-width:300px;margin-left:auto;margin-right:auto;"
+              onclick="resetOrder()">
+        <i class="ti ti-plus" aria-hidden="true"></i>
+        New order
+      </button>
+    </div>
+
+  </section>
+
+  <footer class="piazza-footer">
+        <div class="footer-info-row">
+            <div class="info-item">
+                <i class="fa-solid fa-location-dot icon-red"></i>
+                <span>Ali Mendjli - El Khroub, Constantine</span>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-phone icon-red"></i>
+                <span>0551 55 50 55 · 0660 66 60 66</span>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2026 PIAZZA DELLA PIZZA. Made with ♡</p>
+        </div>
+    </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
