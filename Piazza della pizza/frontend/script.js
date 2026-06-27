@@ -151,40 +151,77 @@ function buildSummary() {
   `;
 }
 
-//Submit order
-function submitOrder() {
-  const ticketNum = '#' + Math.floor(1000 + Math.random() * 9000);
-  const basePrice = prices[order.size] || 0;
-  const total     = basePrice + order.toppings.length * toppingPriceEach;
+//Submit order — sends data to the backend API
+async function submitOrder() {
+  const btn = document.querySelector('.order-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader-2" aria-hidden="true"></i> Placing order…';
 
-  document.getElementById('ticketNum').textContent      = ticketNum;
-  document.getElementById('confirmPhone').textContent   = order.phone;
+  try {
+    const response = await fetch('http://localhost:3000/api/orders/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        size:     order.size,
+        type:     order.type,
+        toppings: order.toppings,
+        customer: {
+          name:    order.name,
+          phone:   order.phone,
+          address: order.address,
+        },
+      }),
+    });
 
-  document.getElementById('ticketDetails').innerHTML = `
-    <div class="summary-row">
-      <span class="label" style="color:var(--color-text-secondary)">Pizza</span>
-      <span class="val">${order.type} (${order.size})</span>
-    </div>
-    <div class="summary-row">
-      <span class="label" style="color:var(--color-text-secondary)">Toppings</span>
-      <span class="val">${order.toppings.length} extra${order.toppings.length !== 1 ? 's' : ''}</span>
-    </div>
-    <div class="summary-row">
-      <span class="label" style="color:var(--color-text-secondary)">Total</span>
-      <span class="val">${total} DA</span>
-    </div>
-    <div class="summary-row">
-      <span class="label" style="color:var(--color-text-secondary)">Deliver to</span>
-      <span class="val" style="max-width:55%;text-align:right">${order.address}</span>
-    </div>
-  `;
+    const result = await response.json();
 
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById('page' + i).style.display = 'none';
+    if (!response.ok) {
+      // Show validation errors from the backend
+      const msg = result.errors ? result.errors.join('\n') : result.message;
+      alert('Could not place order:\n' + msg);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-checks" aria-hidden="true"></i> Place my order';
+      return;
+    }
+
+    // Confirmation page
+    const data = result.data;
+
+    document.getElementById('ticketNum').textContent    = data.ticketNumber;
+    document.getElementById('confirmPhone').textContent = data.customer.phone;
+
+    document.getElementById('ticketDetails').innerHTML = `
+      <div class="summary-row">
+        <span class="label" style="color:var(--color-text-secondary)">Pizza</span>
+        <span class="val">${data.type} (${data.size})</span>
+      </div>
+      <div class="summary-row">
+        <span class="label" style="color:var(--color-text-secondary)">Toppings</span>
+        <span class="val">${data.toppings.length} extra${data.toppings.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="summary-row">
+        <span class="label" style="color:var(--color-text-secondary)">Total</span>
+        <span class="val">${data.totalPrice} DA</span>
+      </div>
+      <div class="summary-row">
+        <span class="label" style="color:var(--color-text-secondary)">Deliver to</span>
+        <span class="val" style="max-width:55%;text-align:right">${data.customer.address}</span>
+      </div>
+    `;
+
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('page' + i).style.display = 'none';
+    }
+    document.getElementById('page5').style.display = '';
+    updateStepBar(5);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  } catch (err) {
+    // Network error (backend not reachable)
+    alert('Could not reach the server. Please make sure the backend is running.');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-checks" aria-hidden="true"></i> Place my order';
   }
-  document.getElementById('page5').style.display = '';
-  updateStepBar(5);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 //New Order
